@@ -38,7 +38,8 @@ public class JohnsonCameronAssignment2_CS2300 {
 			
 				if(isTurnValid) {
 				
-					processPlay(startRow, startCol, endRow, endCol, player, gameBoard);
+					double[][] lineAndMidpoints = determineMidpoints(startRow, startCol, endRow, endCol, gameBoard);
+					processPlay(lineAndMidpoints, player);
 				
 				}
 				else {
@@ -95,7 +96,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 	}
 	
-	public static void processPlay(int sr, int sc, int er, int ec, int player, char[][] gameBoard) {
+	public static double[][] determineMidpoints(int sr, int sc, int er, int ec, char[][] gameBoard) {
 		
 		double boardSize = gameBoard.length;
 		
@@ -116,6 +117,20 @@ public class JohnsonCameronAssignment2_CS2300 {
 			
 			
 		}
+		
+		return line;
+		
+	}
+	
+	public static void processPlay(double[][] line, int player) {
+		
+		
+		
+	}
+	
+	public static void printPlay() {
+		
+		
 		
 	}
 
