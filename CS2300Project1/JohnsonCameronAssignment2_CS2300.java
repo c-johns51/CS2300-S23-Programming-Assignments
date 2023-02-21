@@ -20,6 +20,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 		
 		int invalidTimeout = readFile.nextInt();
+		int invalidTurnCounter = 0;
 		
 		int startRow = 0;
 		int startCol = 0;
@@ -45,15 +46,18 @@ public class JohnsonCameronAssignment2_CS2300 {
 				
 					if(isTurnValid) {
 					
-						double[][] lineAndMidpoints = determineMidpoints(startRow, startCol, endRow, endCol, gameBoard);
 						processPlay(gameBoard, startRow, startCol, endRow, endCol, player);
 						printPlay(gameBoard);
+						
+						playedCoordinates.add(startRow);
+						playedCoordinates.add(startCol);
+						playedCoordinates.add(endRow);
+						playedCoordinates.add(endCol);
 					
 					}
 					else {
 					
-						// idk yet
-						System.out.println("Not valid");
+						invalidTurnCounter = invalidTimeout;
 				
 					}
 					
@@ -86,10 +90,10 @@ public class JohnsonCameronAssignment2_CS2300 {
 		int[] currentPoints = {sr, sc, er, ec};
 		
 		if(previousPlays.size() != 0) {
-			for(int i = 0; i == previousPlays.size(); i++) {
+			for(int i = 0; i < previousPlays.size(); i++) {
 				for(int j = 0; j < currentPoints.length; j++) {
 				
-					if(currentPoints[j] != previousPlays.get(i)) {
+					if(currentPoints[j] != previousPlays.get(j + (i * 2))) {
 					
 						result = true;
 					
@@ -107,32 +111,6 @@ public class JohnsonCameronAssignment2_CS2300 {
 		}
 		
 		return result;
-		
-	}
-	
-	public static double[][] determineMidpoints(int sr, int sc, int er, int ec, char[][] gameBoard) {
-		
-		double boardSize = gameBoard.length;
-		
-		double[] start = {sr, sc};
-		double[] end = {er, ec};
-		
-		double[] q = {end[0] - start[0], end[1] - start[1]};
-		
-		// A 2x5 matrix holding x and y values of the line at midpoints of each cell
-		double[][] line = new double[2][(int)boardSize];
-		
-		for(int i = 0; i < (int)boardSize; i++) {
-			
-			double divideByBoardSize = i / (boardSize - 1);
-			
-			line[0][i] = start[0] + (divideByBoardSize * q[0]);
-			line[1][i] = start[1] + (divideByBoardSize * q[1]); 
-			
-			
-		}
-		
-		return line;
 		
 	}
 	
@@ -236,7 +214,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 		System.out.println();
 		
-		for(int i = 1; i < gameBoard.length; i++) {
+		for(int i = gameBoard.length - 1; i > 0; i--) {
 			
 			System.out.print(i + " ");
 			
