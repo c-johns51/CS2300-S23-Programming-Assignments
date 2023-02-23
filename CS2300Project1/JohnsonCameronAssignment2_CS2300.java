@@ -16,7 +16,6 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 		char[][] gameBoard = createMatrix(inputFile, readFile);
 		ArrayList<Integer> playedCoordinates = new ArrayList<>();
-		// int[] invalidCoordinates = new int[4];
 		
 		
 		int invalidTimeout = readFile.nextInt();
@@ -31,6 +30,11 @@ public class JohnsonCameronAssignment2_CS2300 {
 			
 			for(int player = 1; player <= 2; player++) {
 				
+				if(invalidTurnCounter > 0) {
+					
+					invalidTurnCounter--;
+					
+				}
 				// A second check for if the file has more to be read. This is
 				// redundant and I will try to find a better way to approach this,
 				// but for now, this avoids the file running out when the for loop
@@ -42,7 +46,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 					endRow = readFile.nextInt();
 					endCol = readFile.nextInt();
 				
-					boolean isTurnValid = validateTurn(startRow, startCol, endRow, endCol, playedCoordinates);
+					boolean isTurnValid = validateTurn(startRow, startCol, endRow, endCol, playedCoordinates, invalidTurnCounter);
 				
 					if(isTurnValid) {
 					
@@ -58,6 +62,9 @@ public class JohnsonCameronAssignment2_CS2300 {
 					else {
 					
 						invalidTurnCounter = invalidTimeout;
+						System.out.println("This play was invalid. You cannot play these points for the next " + invalidTurnCounter + " turns.");
+						
+						int[] invalidCoordinates = {startRow, startCol, endRow, endCol};
 				
 					}
 					
@@ -83,9 +90,9 @@ public class JohnsonCameronAssignment2_CS2300 {
  		
 	}
 	
-	public static boolean validateTurn(int sr, int sc, int er, int ec, ArrayList<Integer> previousPlays) {
+	public static boolean validateTurn(int sr, int sc, int er, int ec, ArrayList<Integer> previousPlays, int invalidTurns) {
 		
-		boolean result = false;
+		boolean result = true;
 		
 		int[] currentPoints = {sr, sc, er, ec};
 		
@@ -93,9 +100,9 @@ public class JohnsonCameronAssignment2_CS2300 {
 			for(int i = 0; i < previousPlays.size(); i++) {
 				for(int j = 0; j < currentPoints.length; j++) {
 				
-					if(currentPoints[j] != previousPlays.get(j + (i * 2))) {
+					if(currentPoints[j] == previousPlays.get(j + (i * 2))) {
 					
-						result = true;
+						result = false;
 					
 					}
 				
@@ -107,6 +114,12 @@ public class JohnsonCameronAssignment2_CS2300 {
 		else {
 			
 			result = true;
+			
+		}
+		
+		if(invalidTurns > 0) {
+			
+			
 			
 		}
 		
