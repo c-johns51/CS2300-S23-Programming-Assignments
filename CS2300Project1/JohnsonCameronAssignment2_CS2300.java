@@ -16,6 +16,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 		char[][] gameBoard = createMatrix(inputFile, readFile);
 		ArrayList<Integer> playedCoordinates = new ArrayList<>();
+		int[] invalidCoordinates = new int[4];
 		
 		
 		int invalidTimeout = readFile.nextInt();
@@ -46,7 +47,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 					endRow = readFile.nextInt();
 					endCol = readFile.nextInt();
 				
-					boolean isTurnValid = validateTurn(startRow, startCol, endRow, endCol, playedCoordinates, invalidTurnCounter);
+					boolean isTurnValid = validateTurn(startRow, startCol, endRow, endCol, playedCoordinates, invalidCoordinates, invalidTurnCounter);
 				
 					if(isTurnValid) {
 					
@@ -64,7 +65,10 @@ public class JohnsonCameronAssignment2_CS2300 {
 						invalidTurnCounter = invalidTimeout;
 						System.out.println("This play was invalid. You cannot play these points for the next " + invalidTurnCounter + " turns.");
 						
-						int[] invalidCoordinates = {startRow, startCol, endRow, endCol};
+						invalidCoordinates[0] = startRow;
+						invalidCoordinates[1] = startCol;
+						invalidCoordinates[2] = endRow;
+						invalidCoordinates[3] = endCol;
 				
 					}
 					
@@ -73,6 +77,8 @@ public class JohnsonCameronAssignment2_CS2300 {
 			}
 			
 		}
+		
+		printTotals(gameBoard);
 			
 	}
 	
@@ -90,7 +96,7 @@ public class JohnsonCameronAssignment2_CS2300 {
  		
 	}
 	
-	public static boolean validateTurn(int sr, int sc, int er, int ec, ArrayList<Integer> previousPlays, int invalidTurns) {
+	public static boolean validateTurn(int sr, int sc, int er, int ec, ArrayList<Integer> previousPlays, int[] invalidCoordinates, int invalidTurns) {
 		
 		boolean result = true;
 		
@@ -119,7 +125,22 @@ public class JohnsonCameronAssignment2_CS2300 {
 		
 		if(invalidTurns > 0) {
 			
+			int[] invalidStart = {invalidCoordinates[0], invalidCoordinates[1]};
+			int[] invalidEnd = {invalidCoordinates[2], invalidCoordinates[3]};
 			
+			// If else statement checking if the start or end coordinates match
+			// There probably is a better way to do this, but I will blame being sick
+			// on not being able to figure out how to make it better
+			if(invalidStart[0] == sr && invalidStart[1] == sc) {
+				
+				result = false;
+				
+			}
+			else if(invalidEnd[0] == er && invalidEnd[1] == ec) {
+				
+				result = false;
+				
+			}
 			
 		}
 		
@@ -242,6 +263,43 @@ public class JohnsonCameronAssignment2_CS2300 {
 		}
 		
 		System.out.println();
+		
+	}
+	
+	public static void printTotals(char[][] gameBoard) {
+		
+		int player1Count = 0;
+		int player2Count = 0;
+		
+		for(int i = 1; i < gameBoard.length; i++) {
+			for(int j = 1; i < gameBoard[0].length; j++) {
+				
+				if(gameBoard[i][j] == 'X') {
+					
+					player1Count++;
+					
+				}
+				else if(gameBoard[i][j] == 'O') {
+					
+					player2Count++;
+					
+				}
+				
+			}
+			
+			
+		}
+		
+		if(player1Count > player2Count) {
+			
+			System.out.println("Player 1 wins!");
+			
+		}
+		else if(player2Count > player1Count) {
+			
+			System.out.println("Player 2 wins!");
+			
+		}
 		
 	}
 
