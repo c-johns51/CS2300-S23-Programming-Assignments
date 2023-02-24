@@ -3,14 +3,16 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.lang.Math;
+import java.io.PrintWriter;
 
 public class JohnsonCameronAssignment2_CS2300 {
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-		File inputFile = new File("p2-1.txt");
+		File inputFile = new File("p2-5.txt");
 		Scanner readFile = new Scanner(inputFile);
+		PrintWriter writeFile = new PrintWriter("p2-5_output.txt");
 		
 		// Array initialization
 		char[][] gameBoard = createMatrix(inputFile, readFile);
@@ -57,7 +59,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 					if(isTurnValid) {
 					
 						processPlay(gameBoard, startRow, startCol, endRow, endCol, player);
-						printPlay(gameBoard);
+						printPlay(gameBoard, writeFile);
 						
 						// Adds the played coordinates to a list of played coordinates at the
 						// end of the turn
@@ -71,7 +73,7 @@ public class JohnsonCameronAssignment2_CS2300 {
 					
 						// Sets invalidTurnCounter to the value of invalidTimeout
 						invalidTurnCounter = invalidTimeout;
-						System.out.println("This play was invalid. You cannot play these points for the next " + invalidTurnCounter + " turns.");
+						writeFile.println("This play was invalid. You cannot play these points for the next " + invalidTurnCounter + " turns.");
 						
 						// Sets played coordinates as coordinates that can't be played
 						// I'm not sure if this assignment requires multiple invalid coordinates or
@@ -90,11 +92,16 @@ public class JohnsonCameronAssignment2_CS2300 {
 		}
 		
 		// Prints the final score
-		printTotals(gameBoard);
+		printTotals(gameBoard, writeFile);
+		
+		writeFile.close();
+		readFile.close();
 			
 	}
 	
 	// Method that creates the board given the size from the file
+	// The board visually breaks a little in the console past 9x9, because
+	// it doesn't account for the offset caused by two digit numbers. Still works logically
 	public static char[][] createMatrix(File inputFile, Scanner readFile) throws IOException {
 		
 		int boardSize = readFile.nextInt();
@@ -276,42 +283,42 @@ public class JohnsonCameronAssignment2_CS2300 {
 	}
 	
 	// Method that prints the play
-	public static void printPlay(char[][] gameBoard) {
+	public static void printPlay(char[][] gameBoard, PrintWriter writeFile) {
 		
-		System.out.print("  ");
+		writeFile.print("  ");
 		
 		// Prints out the numbers of the columns of the board
 		for(int i = 1; i < gameBoard.length; i++) {
 			
-			System.out.printf("%d ", i);
+			writeFile.printf("%d ", i);
 			
 		}
 		
-		System.out.println();
+		writeFile.println();
 		
 		// Prints out the numbers of the rows of the board, backwards
 		// because normally 2D arrays are top to bottom by default
 		// but we need bottom to top
 		for(int i = gameBoard.length - 1; i > 0; i--) {
 			
-			System.out.print(i + " ");
+			writeFile.print(i + " ");
 			
 			for( int j = 1; j < gameBoard[0].length; j++) {
 				
-				System.out.print(gameBoard[i][j] + " ");
+				writeFile.print(gameBoard[i][j] + " ");
 				
 			}
 			
-			System.out.println();
+			writeFile.println();
 			
 		}
 		
-		System.out.println();
+		writeFile.println();
 		
 	}
 	
 	// Method to print totals after the game
-	public static void printTotals(char[][] gameBoard) {
+	public static void printTotals(char[][] gameBoard, PrintWriter writeFile) {
 		
 		int player1Count = 0;
 		int player2Count = 0;
@@ -340,24 +347,24 @@ public class JohnsonCameronAssignment2_CS2300 {
 		}
 		
 		// Prints how many of each there were
-		System.out.println("There were " + player1Count + " X's placed and " + player2Count + " O's placed.");
+		writeFile.println("There were " + player1Count + " X's placed and " + player2Count + " O's placed.");
 		
 		// If more X than O
 		if(player1Count > player2Count) {
 			
-			System.out.println("Player 1 wins!");
+			writeFile.println("Player 1 wins!");
 			
 		}
 		// If more O than X
 		else if(player2Count > player1Count) {
 			
-			System.out.println("Player 2 wins!");
+			writeFile.println("Player 2 wins!");
 			
 		}
 		// If same amount of X and O
 		else if(player1Count == player2Count) {
 			
-			System.out.println("There was a tie!");
+			writeFile.println("There was a tie!");
 			
 		}
 		
