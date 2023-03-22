@@ -9,7 +9,7 @@ public class CJohnson_PartB {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-		File inputFile = new File("test_input_1.txt");
+		File inputFile = new File("test_input_4.txt");
 		
 		// 2x3 matrix that stores the values read from file
 		double[][] matrixA = createMatrixAFromFile(inputFile);
@@ -23,6 +23,8 @@ public class CJohnson_PartB {
 		double[][] eigenDecomp = doEigenDecomp(eigenVectors, eigenMatrix, eigenVecTranspose);
 		
 		int areMatricesEqual = areMatricesEqual(matrixA, eigenDecomp);
+		
+		printOutput(areMatricesEqual, eigenMatrix, eigenVectors, eigenDecomp);
 		
 		
 				
@@ -55,6 +57,7 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Method that finds the eigenvalues for matrix A
 	public static double[][] findEigenvalues(double[][] matA) {
 		
 		double[][] eigenMatrix = new double[2][2];
@@ -71,6 +74,8 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Method that finds the eigenvectors given the eigenvalues and matrix A, returns them as a matrix
+	// with each column being an eigenvector
 	public static double[][] findEigenvectors(double[][] matA, double[][] eigenMat) {
 		
 		double[][] eigenVecMatrix = new double[2][2];
@@ -97,7 +102,11 @@ public class CJohnson_PartB {
 			// when needed.
 			boolean didColumnsPivot = gaussianElim(matACopy);
 			
+			// If the LL of the matrix is 0, continue
 			if(matACopy[1][1] == 0) {
+				
+				// If the columns pivoted, swap r1 and r2
+				// This just makes r1 = 1 and solve for r2 rather than vice versa as normal
 				if(didColumnsPivot) {
 					
 					r1 = 1;
@@ -112,9 +121,14 @@ public class CJohnson_PartB {
 				}
 				
 			}
+			// If the LL != 0, then there are no trivial eigenvalues
 			else {
 				
-				// idk yet
+				// I want to redo this later
+				// If I don't, it still looks like the output works, but there's unnecessary output afterwards
+				// I want this to be the only thing printed out, so I could probably make this a method that returns a string
+				// But then this method would also have to return a string, hmm...
+				System.out.println("There are no non-trivial eigenvectors.");
 				
 			}
 			
@@ -131,6 +145,8 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Method that performs gaussian elimination on the given matrix, will return true/false if a
+	// column swap occured, so that r1 and r2 values can be swapped
 	public static boolean gaussianElim(double[][] matrix) {
 		
 		double A = matrix[0][0];
@@ -193,9 +209,11 @@ public class CJohnson_PartB {
 		}
 		
 
-		
+		// Code below calculates the needed shear matrix for the LL corner of the matrix
+		// to be 0
 		double[][] shearMat = new double[2][2];
 		
+		// Shear identity matrix
 		shearMat[0][0] = 1;
 		shearMat[0][1] = 0;
 		shearMat[1][0] = 0;
@@ -203,15 +221,19 @@ public class CJohnson_PartB {
 		
 		double x = 0;
 		
+		// Equation for finding x
 		x = -(matrix[1][0]) / matrix[0][0];
 		
+		// Setting the LL of the shear matrix to x
 		shearMat[1][0] = x;
 		
+		// Multiplication between shear and matrix
 		A = (shearMat[0][0] * matrix[0][0]) + (shearMat[0][1] * matrix[1][0]);
 		b = (shearMat[0][0] * matrix[0][1]) + (shearMat[0][1] * matrix[1][1]);
 		c = (shearMat[1][0] * matrix[0][0]) + (shearMat[1][1] * matrix[1][0]);
 		D = (shearMat[1][0] * matrix[0][1]) + (shearMat[1][1] * matrix[1][1]);
 		
+		// Sets above values to respective positions in matrix
 		matrix[0][0] = A;
 		matrix[0][1] = b;
 		matrix[1][0] = c;
@@ -221,6 +243,7 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Creates a transpose of the eigen vector matrix
 	public static double[][] createTranspose(double[][] matrix){
 		
 		double[][] transposeMatrix = new double[2][2];
@@ -239,6 +262,9 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Carries out the process of eigendecomposition, multiplying the eigenvector matrix and eigenvalue matrix together,
+	// then multiplying the product matrix with the transposed eigenvector matrix
+	// Method reuses an algorithm for matrix multiplication from assignment 1
 	public static double[][] doEigenDecomp(double[][] eigenVecs, double[][] eigenVals, double[][] eigenVecsTranspose){
 		
 		double[][] eigenDecompMatrixFirstStep = new double[2][2];
@@ -285,14 +311,20 @@ public class CJohnson_PartB {
 		
 	}
 	
+	// Compares each value in the matrix with each other
 	public static int areMatricesEqual(double[][] matA, double[][] decompMat) {
 		
 		int result = 1;
+		double tolerance = 0.000001;
 		
 		for(int i = 0; i < matA.length; i++) {
 			for(int j = 0; j < matA[0].length; j++) {
 				
-				if(matA[i][j] != decompMat[i][j]) {
+				// if the value in ith,jth position of each matrix aren't equal to each other
+				// and the difference of the two values in said position are greater than the tolerance
+				// Tolerance is needed just in case the values are incredibly close to each other, in
+				// which case they might as well be equal (because comparing doubles is tricky)
+				if((matA[i][j] != decompMat[i][j]) && (Math.abs(matA[i][j] - decompMat[i][j]) > tolerance)) {
 					
 					result = 0;
 					
@@ -304,6 +336,57 @@ public class CJohnson_PartB {
 		}
 		
 		return result;
+	}
+	
+	// Method that prints out the vectors and the integer indicating if the matrices are equal
+	public static void printOutput(int matEquality, double[][] eigenMat, double[][] eigenVecs, double[][] eigenDecompMat) throws IOException {
+		
+		PrintWriter print2File = new PrintWriter("JCameron_PartB_outputFile4");
+		
+		for(int i = 0; i < eigenMat.length; i++) {
+			for(int j = 0; j < eigenMat[0].length; j++) {
+				
+				print2File.printf("%.4f ", eigenMat[i][j]);
+				System.out.printf("%.4f ", eigenMat[i][j]);
+				
+			}
+			
+			print2File.println();
+			System.out.println();
+			
+		}
+		
+		for(int i = 0; i < eigenVecs.length; i++) {
+			for(int j = 0; j < eigenVecs[0].length; j++) {
+				
+				print2File.printf("%.4f ", eigenVecs[i][j]);
+				System.out.printf("%.4f ", eigenVecs[i][j]);
+				
+			}
+			
+			print2File.println();
+			System.out.println();
+			
+		}
+		
+		for(int i = 0; i < eigenDecompMat.length; i++) {
+			for(int j = 0; j < eigenDecompMat[0].length; j++) {
+				
+				print2File.printf("%.4f ", eigenDecompMat[i][j]);
+				System.out.printf("%.4f ", eigenDecompMat[i][j]);
+				
+			}
+			
+			print2File.println();
+			System.out.println();
+			
+		}
+		
+		print2File.println(matEquality);
+		System.out.println(matEquality);
+		
+		print2File.close();
+		
 	}
 
 }
