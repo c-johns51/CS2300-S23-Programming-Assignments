@@ -8,7 +8,9 @@ public class CJohnson_PartA {
 	
 	public static void main(String[] args) throws IOException {
 		
-		File inputFile = new File("test_input_1.txt");
+		// Replace both this String and the output file String in printOutput() with
+		// the input file name and desired output file name respectively.
+		File inputFile = new File("test_input_4.txt");
 		
 		// 2x3 matrix that stores the values read from file
 		double[][] valueMatrix = readFile(inputFile);
@@ -24,33 +26,24 @@ public class CJohnson_PartA {
 		
 		double detA = calculateDeterminant(matrixA);
 		// If the determinant of matrix A is 0:
+		
+		double[] vectorX = new double[2];
+		String systemIs = "";
+		
 		if(detA == 0) {
 			
 			// Determine if system is inconsistent or underdetermined
-			String systemIs = isInconsistentOrUnderdetermined(matrixA, vectorB);
-			
-			double[] vectorX = new double[2];
-			
-			if(systemIs.equals("Can Solve for X")) {
+			systemIs = isInconsistentOrUnderdetermined(matrixA, vectorB);
 				
-				solveForX(matrixA, vectorB, vectorX, detA);
-				
-			}
-			
-			printOutput(systemIs, vectorX);
-			
-			
-			
 		}
-		else {
-			
-			
-		}
- 		
+
+		solveForX(matrixA, vectorB, vectorX, detA);
+		printOutput(systemIs, vectorX);
 		
 	}
 	
-	// This method reads the first two columns of the file for a 2x2 OR 3x3 matrix
+	// This method reads the file for a 2x3 matrix
+	// This matrix is then used to create matrix A and vector B later
 	public static double[][] readFile(File inputFile) throws IOException {
 
 		// Creates a 2x3 matrix to be written to
@@ -134,11 +127,11 @@ public class CJohnson_PartA {
 			double e = d/detA;
 			double f = (-b)/detA;
 			double g = (-c)/detA;
-			double h = d/detA;
+			double h = a/detA;
 			
 			// Equations to solve for x1 and x2
 			x1 = (e*b1) + (f*b2);
-			x2 = (g*b1) + (f*b2);
+			x2 = (g*b1) + (h*b2);
 			
 		}
 		// If the determinant of matrix A is 0:
@@ -199,8 +192,27 @@ public class CJohnson_PartA {
 		
 	}
 	
-	public static void printOutput(String systemIs, double[] vecX) {
+	public static void printOutput(String systemIs, double[] vecX) throws IOException {
 		
+		// Change file output name to desired file name before running program
+		PrintWriter print2File = new PrintWriter("JCameron_outputFile4.txt");
+		
+		if(systemIs.equals("Inconsistent") || systemIs.equals("Underdetermined")) {
+			
+			print2File.println("System " + systemIs);
+			System.out.println("System " + systemIs);
+			
+		}
+		else {
+			
+			print2File.printf("%.4f\n", vecX[0]);
+			System.out.printf("%.4f\n", vecX[0]);
+			print2File.printf("%.4f\n", vecX[1]);
+			System.out.printf("%.4f\n", vecX[1]);
+			
+		}
+		
+		print2File.close();
 		
 	}
 
