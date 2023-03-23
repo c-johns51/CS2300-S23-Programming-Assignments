@@ -34,6 +34,7 @@ public class CJohnson_PartB {
 	
 	// This method reads the file for a 2x3 matrix
 	// Matrix from here will then be used to make matrix A, last column is disregarded.
+	// Input: File being read - Output: 2x2 matrix with values from file
 	public static double[][] createMatrixAFromFile(File inputFile) throws IOException {
 
 		// Creates a 2x3 matrix to be written to
@@ -58,6 +59,7 @@ public class CJohnson_PartB {
 	}
 	
 	// Method that finds the eigenvalues for matrix A
+	// Input: 2x2 matrix A - Output: 2x2 matrix with eigenvalues on the diagonal
 	public static double[][] findEigenvalues(double[][] matA) {
 		
 		double[][] eigenMatrix = new double[2][2];
@@ -76,6 +78,7 @@ public class CJohnson_PartB {
 	
 	// Method that finds the eigenvectors given the eigenvalues and matrix A, returns them as a matrix
 	// with each column being an eigenvector
+	// Input: 2x2 matrix A, 2x2 eigenvalue matrix - Output: 2x2 matrix with two eigenvectors as its columns 
 	public static double[][] findEigenvectors(double[][] matA, double[][] eigenMat) {
 		
 		double[][] eigenVecMatrix = new double[2][2];
@@ -147,6 +150,7 @@ public class CJohnson_PartB {
 	
 	// Method that performs gaussian elimination on the given matrix, will return true/false if a
 	// column swap occured, so that r1 and r2 values can be swapped
+	// Input: copy of 2x2 matrix A-l - Output: true/false if column pivot occured, change to matrix passed in
 	public static boolean gaussianElim(double[][] matrix) {
 		
 		double A = matrix[0][0];
@@ -244,6 +248,7 @@ public class CJohnson_PartB {
 	}
 	
 	// Creates a transpose of the eigen vector matrix
+	// Input: 2x2 eigenvector matrix - Output: transpose of 2x2 eigenvector matrix
 	public static double[][] createTranspose(double[][] matrix){
 		
 		double[][] transposeMatrix = new double[2][2];
@@ -265,6 +270,7 @@ public class CJohnson_PartB {
 	// Carries out the process of eigendecomposition, multiplying the eigenvector matrix and eigenvalue matrix together,
 	// then multiplying the product matrix with the transposed eigenvector matrix
 	// Method reuses an algorithm for matrix multiplication from assignment 1
+	// Inputs: 2x2 matrix of eigenvectors, 2x2 matrix with eigenvalues on diag., 2x2 transposed eigenvectors matrix - Output: 2x2 eigen decomposition matrix
 	public static double[][] doEigenDecomp(double[][] eigenVecs, double[][] eigenVals, double[][] eigenVecsTranspose){
 		
 		double[][] eigenDecompMatrixFirstStep = new double[2][2];
@@ -312,6 +318,7 @@ public class CJohnson_PartB {
 	}
 	
 	// Compares each value in the matrix with each other
+	// Inputs: 2x2 matrix A, 2x2 eigen decomp matrix - Output: 0/1 for not equal/equal
 	public static int areMatricesEqual(double[][] matA, double[][] decompMat) {
 		
 		int result = 1;
@@ -339,10 +346,12 @@ public class CJohnson_PartB {
 	}
 	
 	// Method that prints out the vectors and the integer indicating if the matrices are equal
+	// Input: 0/1 equality int, 2x2 mat with eigens on diag., 2x2 mat of eigenvectors, 2x2 eigen decomp mat - Output: Prints all mats and 0/1 to file/console
 	public static void printOutput(int matEquality, double[][] eigenMat, double[][] eigenVecs, double[][] eigenDecompMat) throws IOException {
 		
 		PrintWriter print2File = new PrintWriter("JCameron_PartB_outputFile4");
 		
+		// Output also printed to console so I didn't have to open every file for validation
 		for(int i = 0; i < eigenMat.length; i++) {
 			for(int j = 0; j < eigenMat[0].length; j++) {
 				

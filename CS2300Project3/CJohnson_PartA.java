@@ -44,6 +44,7 @@ public class CJohnson_PartA {
 	
 	// This method reads the file for a 2x3 matrix
 	// This matrix is then used to create matrix A and vector B later
+	// Input: file to be read - Output: 2x3 matrix with values from file
 	public static double[][] readFile(File inputFile) throws IOException {
 
 		// Creates a 2x3 matrix to be written to
@@ -71,6 +72,7 @@ public class CJohnson_PartA {
 	
 	// Method that "splits" the valueMatrix into matrix A and vector B
 	// Updates matrix A and vector B passed in from main
+	// Input: 2x3 matrix from file, 2x2 matrix A, 2x1 vector B - Output: changes to matrix A and vector B
 	public static void createMatrixAndVector(double[][] valueMatrix, double[][] matA, double[] vecB) {
 		
 		// Iterates through valueMatrix, places the first two columns into matA and
@@ -88,6 +90,7 @@ public class CJohnson_PartA {
 	}
 	
 	// Calculates the determinant of matrix A, returns determinant value
+	// Input: 2x2 matrix A - Output: determinant of matrix
 	public static double calculateDeterminant(double[][] matA) {
 		
 		// Variable initialization
@@ -105,6 +108,7 @@ public class CJohnson_PartA {
 	}
 	
 	// Method to update empty vector X passed by main
+	// Inputs: 2x2 mat A, 2xa vec B, 2x1 empty vec X, determinant of mat A - Output: changes to vector X in main
 	public static void solveForX(double[][] matA, double[] vecB, double[] vecX, double detA) {
 		
 		// Variable initialization for matA, vecB, and x1 and x2
@@ -163,6 +167,8 @@ public class CJohnson_PartA {
 		
 	}
  	
+	// Method that determines if the system is inconsistent or underdetermined
+	// Input: 2x2 mat A, 2x1 vec B - Output: "Inconsistent" or "Underdetermined"
 	public static String isInconsistentOrUnderdetermined(double[][] matA, double[] vecB) {
 		
 		double a = matA[0][0];
@@ -192,6 +198,8 @@ public class CJohnson_PartA {
 		
 	}
 	
+	// Method that prints to file/console
+	// Inputs: state of system, vector X - Output: "System inconsistent" or "System underdetermined" or the values of vector X
 	public static void printOutput(String systemIs, double[] vecX) throws IOException {
 		
 		// Change file output name to desired file name before running program
