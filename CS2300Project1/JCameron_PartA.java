@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Scanner;
 import java.lang.Math;
+import java.util.ArrayList;
 
 public class JCameron_PartA {
 
@@ -16,12 +17,42 @@ public class JCameron_PartA {
 		
 		readFileValues(inputFile, eyeLocation, lightDirection);
 		
+		// List of triangles, each holding values showing whether they're culled or not
 		Triangle[] trianglesList = cullTriangles(inputFile, numTriangles(inputFile), eyeLocation, lightDirection);
 		
+		PrintWriter printPartA = new PrintWriter("JCameron_output_PartA_subA.txt");
+		for(int i = 0; i< trianglesList.length; i++) {
+			
+			printPartA.print(trianglesList[i].getCullStatus() + " ");
+			System.out.print(trianglesList[i].getCullStatus() + " ");
+			
+		}
 		
+		printPartA.println();
+		System.out.println();
+
+		for(int i = 0; i < trianglesList.length; i++) {
+			
+			// Calculates the light intensity on a given triangle
+			printPartA.print(calculateIntensity(trianglesList[i], lightDirection) + " ");
+			System.out.print(calculateIntensity(trianglesList[i], lightDirection) + " ");
+			
+		}
 		
+		printPartA.println();
+		System.out.println();
 		
+		double[] cullThenIntensity = cullThenIntensity(trianglesList, lightDirection);
 		
+		for(int i = 0; i < cullThenIntensity.length; i++) {
+			
+			printPartA.print(cullThenIntensity[i] + " ");
+			System.out.print(cullThenIntensity[i] + " ");
+			
+		}
+		
+		printPartA.close();
+
 	}
 	
 	public static void readFileValues(File inputFile, double[] eyeLocation, double[] lightDirection) throws IOException {
@@ -156,13 +187,13 @@ public class JCameron_PartA {
 			// Calculates the dot product of the normal vector and the view vector (n . v)
 			double dotProduct = (normalVector[0] * viewVector[0]) + (normalVector[1] * viewVector[1]) + (normalVector[2] * viewVector[2]);
 			
-			// If the dot product is less than or equal to 0, the triangle is front facing
+			// If the dot product is less than or equal to 0, the triangle is back facing
 			if(dotProduct <= 0) {
 				
 				triangle.setCull(0);
 				
 			}
-			// Otherwise, the triangle is back facing
+			// Otherwise, the triangle is front facing
 			else {
 				
 				triangle.setCull(1);
@@ -180,29 +211,56 @@ public class JCameron_PartA {
 		
 	}
 	
-	public static double[] calculateIntensity(Triangle[] triangles, double[] lightDirection) {
+	public static double calculateIntensity(Triangle triangle, double[] lightDirection) {
 		
-		double[] lightIntensities = new double[triangles.length];
-		
-		double[] direction = {lightDirection[0] * -1, lightDirection[1] * -1, lightDirection[2] * -1};
+		double[] direction = {(lightDirection[0] * -1), (lightDirection[1] * -1), (lightDirection[2] * -1)};
 		
 		double directionLength = Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2) + Math.pow(direction[2], 2));
 		
-		for(int i = 0; i < triangles.length; i++) {
+		double dotProduct = (direction[0] * triangle.getNorm(0)) + (direction[1] * triangle.getNorm(1)) + (direction[2] * triangle.getNorm(2));
+		
+		double triangleNormLength = Math.sqrt(Math.pow(triangle.getNorm(0), 2) + Math.pow(triangle.getNorm(1), 2) + Math.pow(triangle.getNorm(2), 2));
+		
+		double angle = dotProduct / (triangleNormLength * directionLength);
+		
+		double lightIntensity = Math.max(angle, 0);
+		
+		return lightIntensity;
+		
+	}
+	
+	public static double[] cullThenIntensity(Triangle[] triangle, double[] lightDirection) {
+		
+		ArrayList<Triangle> trianglesNotCulled = new ArrayList<>();
+		
+		for(int i = 0; i < triangle.length; i++) {
 			
-			double dotProduct = (direction[0] * triangles[i].getNorm(0)) + (direction[1] * triangles[i].getNorm(1)) + (direction[2] * triangles[i].getNorm(2));
+			// If the current triangle is not culled
+			if(!triangle[i].isCulled()) {
+				
+				// Add triangle to list of triangles that are not culled
+				trianglesNotCulled.add(triangle[i]);
+				
+			}
 			
-			double triangleNormLength = Math.sqrt(Math.pow(triangles[i].getNorm(0), 2) + Math.pow(triangles[i].getNorm(1), 2) + Math.pow(triangles[i].getNorm(2), 2));
+		}
+		
+		// Array to hold the light intensities of each triangle
+		double[] lightIntensities = new double[trianglesNotCulled.size()];
+		
+		for(int i = 0; i < lightIntensities.length; i++) {
 			
-			double intensity = dotProduct / (triangleNormLength * directionLength);
+			// Calculate the light intensity for the triangle and place it into the array
+			lightIntensities[i] = calculateIntensity(triangle[i], lightDirection);
 			
-			lightIntensities[i] = intensity;
 			
 		}
 		
 		return lightIntensities;
 		
 	}
+	
+	
 }
 
 class Triangle {
@@ -272,7 +330,13 @@ class Triangle {
 		
 	}
 	
-	public boolean getCull() {
+	public int getCullStatus() {
+		
+		return isCulled;
+		
+	}
+	
+	public boolean isCulled() {
 		
 		boolean result = false;
 		
