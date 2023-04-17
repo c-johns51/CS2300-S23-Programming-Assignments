@@ -22,8 +22,8 @@ public class JCameron_PartB {
 		double[][] parallelProjectionMatrix = parallelProjection(inputFile, pointOnPlane, planeNormal, projectionDirection);
 		double[][] perspectiveProjectionMatrix = perspectiveProjection(inputFile, pointOnPlane, planeNormal);
 		
-		print2File(parallelProjectionMatrix, "JCameron_output_PartB_subA");
-		print2File(perspectiveProjectionMatrix, "JCameron_output_PartB_subB");
+		print2File(parallelProjectionMatrix, "JCameron_output_PartB_subA.txt");
+		print2File(perspectiveProjectionMatrix, "JCameron_output_PartB_subB.txt");
 		
 		
 		
