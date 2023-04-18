@@ -21,7 +21,7 @@ public class JCameron_PartA {
 		Triangle[] trianglesList = cullTriangles(inputFile, numTriangles(inputFile), eyeLocation, lightDirection);
 		
 		// Prints a value determining whether or not a triangle is culled
-		PrintWriter printPartA = new PrintWriter("JCameron_output_PartA_subA.txt");
+		PrintWriter printPartA = new PrintWriter("JCameron_output_PartA.txt");
 		for(int i = 0; i< trianglesList.length; i++) {
 			
 			printPartA.print(trianglesList[i].getCullStatus() + " ");
