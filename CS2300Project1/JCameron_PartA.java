@@ -20,6 +20,7 @@ public class JCameron_PartA {
 		// List of triangles, each holding values showing whether they're culled or not
 		Triangle[] trianglesList = cullTriangles(inputFile, numTriangles(inputFile), eyeLocation, lightDirection);
 		
+		// Prints a value determining whether or not a triangle is culled
 		PrintWriter printPartA = new PrintWriter("JCameron_output_PartA_subA.txt");
 		for(int i = 0; i< trianglesList.length; i++) {
 			
@@ -34,20 +35,21 @@ public class JCameron_PartA {
 		for(int i = 0; i < trianglesList.length; i++) {
 			
 			// Calculates the light intensity on a given triangle
-			printPartA.print(calculateIntensity(trianglesList[i], lightDirection) + " ");
-			System.out.print(calculateIntensity(trianglesList[i], lightDirection) + " ");
+			printPartA.printf("%.2f ",calculateIntensity(trianglesList[i], lightDirection));
+			System.out.printf("%.2f ",calculateIntensity(trianglesList[i], lightDirection));
 			
 		}
 		
 		printPartA.println();
 		System.out.println();
 		
+		// Array of values processing light intensity on ONLY the rendered triangles
 		double[] cullThenIntensity = cullThenIntensity(trianglesList, lightDirection);
 		
 		for(int i = 0; i < cullThenIntensity.length; i++) {
 			
-			printPartA.print(cullThenIntensity[i] + " ");
-			System.out.print(cullThenIntensity[i] + " ");
+			printPartA.printf("%.2f ", cullThenIntensity[i]);
+			System.out.printf("%.2f ", cullThenIntensity[i]);
 			
 		}
 		
@@ -55,6 +57,9 @@ public class JCameron_PartA {
 
 	}
 	
+	// Method that reads the values of the files
+	// Input: inputFile, eyeLocation array, lightDirection array
+	// Output: no return, update eyeLocation and lightDirection in main
 	public static void readFileValues(File inputFile, double[] eyeLocation, double[] lightDirection) throws IOException {
 		
 		Scanner readInput = new Scanner(inputFile);
@@ -77,6 +82,9 @@ public class JCameron_PartA {
 		
 	}
 	
+	// Method that reads the file for the amount of triangles
+	// Input: inputFile
+	// Output: number of triangles in file
 	public static int numTriangles(File inputFile) throws IOException {
 		
 		int numTriangles = 0;
@@ -109,7 +117,10 @@ public class JCameron_PartA {
 		
 		
 	}
-		
+	
+	// Method that determines whether or not the triangles are culled
+	// Input: inputFile, numTriangles, eyeLocation, lightDirection
+	// Output: array of Triangles, triangles now updated with a value determining if they're culled or not
 	public static Triangle[] cullTriangles(File inputFile, int numTriangles, double[] eyeLocation, double[] lightDirection) throws IOException {
 		
 		Triangle[] trianglesToBeCulled = new Triangle[numTriangles];
@@ -211,24 +222,37 @@ public class JCameron_PartA {
 		
 	}
 	
+	// Method that calculates the light intensity on each triangle
+	// Input: one triangle, lightDirection
+	// Output: the light intensity on the given triangle
 	public static double calculateIntensity(Triangle triangle, double[] lightDirection) {
 		
+		// Makes a new array that's the negative of the lightDirection vector
 		double[] direction = {(lightDirection[0] * -1), (lightDirection[1] * -1), (lightDirection[2] * -1)};
 		
-		double directionLength = Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2) + Math.pow(direction[2], 2));
+		// Length of the light direction vector
+		double directionLength = Math.sqrt(Math.pow(lightDirection[0], 2) + Math.pow(lightDirection[1], 2) + Math.pow(lightDirection[2], 2));
 		
+		// Dot product of the negative light direction vector and the triangle's normal vector
 		double dotProduct = (direction[0] * triangle.getNorm(0)) + (direction[1] * triangle.getNorm(1)) + (direction[2] * triangle.getNorm(2));
 		
+		// Length of the triangle's normal vector
 		double triangleNormLength = Math.sqrt(Math.pow(triangle.getNorm(0), 2) + Math.pow(triangle.getNorm(1), 2) + Math.pow(triangle.getNorm(2), 2));
 		
+		// Calculates the light intensity
 		double angle = dotProduct / (triangleNormLength * directionLength);
 		
+		// The max of the light intensity between the angle given and 0
+		// Removes negative values, which aren't possible
 		double lightIntensity = Math.max(angle, 0);
 		
 		return lightIntensity;
 		
 	}
 	
+	// Method that only processes light intensity on the triangles that are not culled
+	// Input: array of triangles, light direction
+	// Output: array of light intensity values on corresponding rendered triangles
 	public static double[] cullThenIntensity(Triangle[] triangle, double[] lightDirection) {
 		
 		ArrayList<Triangle> trianglesNotCulled = new ArrayList<>();
@@ -251,7 +275,7 @@ public class JCameron_PartA {
 		for(int i = 0; i < lightIntensities.length; i++) {
 			
 			// Calculate the light intensity for the triangle and place it into the array
-			lightIntensities[i] = calculateIntensity(triangle[i], lightDirection);
+			lightIntensities[i] = calculateIntensity(trianglesNotCulled.get(i), lightDirection);
 			
 			
 		}

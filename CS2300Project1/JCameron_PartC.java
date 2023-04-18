@@ -18,6 +18,8 @@ public class JCameron_PartC {
 			
 		}
 		
+		partCSubPart2(inputFile);
+		
 		
 
 	}
@@ -96,7 +98,8 @@ public class JCameron_PartC {
 						
 		}
 		
-		double[] vectorV = {pointY[0] - pointX[0], pointY[1] - pointX[1], pointY[2] - pointX[2]};
+		/*double[] vectorV = {pointY[0] - pointX[0], pointY[1] - pointX[1], pointY[2] - pointX[2]};*/
+		double[] vectorV = {0, 2, 4};
 		
 		readInput.nextLine();
 		
@@ -127,20 +130,56 @@ public class JCameron_PartC {
 										
 			}
 			
-			double[] pointW = {triPoint2[0] - triPoint1[0], triPoint2[1] - triPoint1[1], triPoint2[2] - triPoint1[2]};
-			double[] pointZ = {triPoint3[0] - triPoint1[0], triPoint3[1] - triPoint1[1], triPoint3[2] - triPoint1[2]};
+			/*double[] pointW = {triPoint2[0] - triPoint1[0], triPoint2[1] - triPoint1[1], triPoint2[2] - triPoint1[2]};
+			double[] pointZ = {triPoint3[0] - triPoint1[0], triPoint3[1] - triPoint1[1], triPoint3[2] - triPoint1[2]};*/
+			
+			double[] pointW = {2, 4, 4};
+			double[] pointZ = {-2, 0, 2};
 			
 			double[][] matrixA = {{pointW[0], pointZ[0], -vectorV[0]},
 								  {pointW[1], pointZ[1], -vectorV[1]},		// Creating a matrix to perform gauss elim on
 								  {pointW[2], pointZ[2], -vectorV[2]}};
 			
-			double[] vectorB = {pointX[0] - triPoint1[0], pointX[1] - triPoint1[1], pointX[2] - triPoint1[2]};
+			/*double[] vectorB = {pointX[0] - triPoint1[0], pointX[1] - triPoint1[1], pointX[2] - triPoint1[2]};*/
+			double[] vectorB = {4, -2, 0};
 			double[] vectorU = new double[3];
+			
 			
 			// Find element in largest absolute value in column j
 			for(int j = 0; j < 2; j++) {
+				double largestValue = 0;
+				int indexLargestValue = 0;
 				
 				// Pivoting step???
+				for(int r = j; r < 3; r++) {
+					
+					if(Math.abs(matrixA[r][j]) > largestValue) {
+						
+						indexLargestValue = r;
+						largestValue = Math.abs(matrixA[r][j]);
+						
+					}
+					
+				}
+				
+				if(indexLargestValue > j) {
+					
+					double[] tempRow = {matrixA[indexLargestValue][0], matrixA[indexLargestValue][1], matrixA[indexLargestValue][2]};
+					double tempB = vectorB[indexLargestValue];
+					
+					matrixA[indexLargestValue][0] = matrixA[j][0];
+					matrixA[indexLargestValue][1] = matrixA[j][1];
+					matrixA[indexLargestValue][2] = matrixA[j][2];
+					
+					matrixA[j][0] = tempRow[0];
+					matrixA[j][1] = tempRow[1];
+					matrixA[j][2] = tempRow[2];
+					
+					vectorB[indexLargestValue] = vectorB[j];
+					vectorB[j] = tempB;
+					
+					
+				}
 				
 				// If there's not a zero on the diagonal, continue with forward elim
 				if(matrixA[j][j] != 0) {
@@ -158,14 +197,41 @@ public class JCameron_PartC {
 						
 						vectorB[i] = vectorB[i] - (matrixG[i][j] * vectorB[j]);
 						
+						
 					}
-					
+							
 				}
 				
 			}
 			
 			// Perform back substitution
+			vectorU[2] = vectorB[2]/matrixA[2][2];
+			for(int k = 1; k >= 0; k--) {
+				
+				vectorU[k] = (1 / matrixA[k][k]) * (vectorB[k] - (matrixA[k][k+1] * vectorU[k + 1]));
+				System.out.println(vectorU[k]);
+				
+			}
 			
+			/*if((vectorU[0] > 0 && vectorU[0] < 1) && (vectorU[1] > 0 && vectorU[1] < 1) && (vectorU[0] + vectorU[1] < 1)) {
+				
+				double[] pointOfIntersection = new double[3];
+				
+				for(int i = 0; i < pointOfIntersection.length; i++) {
+					
+					pointOfIntersection[i] = pointX[i] + (vectorV[i] * vectorU[2]);
+					System.out.print(pointOfIntersection[i] + " ");
+					
+				}
+				
+				System.out.println();
+				
+			}
+			else {
+				
+				System.out.println("Does not intersect.");
+				
+			}*/
 			
 		}
 		
@@ -194,12 +260,6 @@ public class JCameron_PartC {
 		
 		double planeNormalLength = Math.sqrt(Math.pow(planeNormal[0], 2) + Math.pow(planeNormal[1], 2) + Math.pow(planeNormal[2], 2));
 		
-		for(int i = 0; i < planeNormal.length; i++) {
-			
-			planeNormal[i] = planeNormal[i] / planeNormalLength;
-			
-		}
-		
 		return planeNormalLength;
 		
 	}
@@ -210,7 +270,7 @@ public class JCameron_PartC {
 		
 		double[] negPlaneNormal = {planeNormal[0] * -1, planeNormal[1] * -1, planeNormal[2] * -1}; 
 		
-		double t = ((dotProduct(negPlaneNormal, pointOnPlane) * -1) + dotProduct(planeNormal, currentPoint)) / dotProduct(planeNormal, planeNormal);
+		double t = (dotProduct(negPlaneNormal, pointOnPlane) + dotProduct(planeNormal, currentPoint)) / dotProduct(planeNormal, planeNormal);
 		
 		double distance = t * planeNormalLength;
 		

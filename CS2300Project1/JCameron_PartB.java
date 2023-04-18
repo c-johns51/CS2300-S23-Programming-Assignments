@@ -30,25 +30,28 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that reads the files and puts values in their vectors
+	// Input: inputFile, pointOnPlane, planeNormal, projectionDirection
+	// Output: no return, updates passed in vectors in main
 	public static void readFileValues(File inputFile, double[] pointOnPlane, double[] planeNormal, double[] projectionDirection) throws IOException {
 		
 		Scanner readInput = new Scanner(inputFile);
 		
-		// For loop that reads in the first three doubles for the eye location
+		// For loop that reads in the first three doubles for the point on plane
 		for(int i = 0; i < pointOnPlane.length; i++) {
 			
 			pointOnPlane[i] = readInput.nextDouble();
 			
 		}
 		
-		// For loop that reads in the second three doubles for the light direction
+		// For loop that reads in the second three doubles for the plane normal
 		for(int i = 0; i < planeNormal.length; i++) {
 			
 			planeNormal[i] = readInput.nextDouble();
 			
 		}
 		
-		// For loop that reads in the second three doubles for the light direction
+		// For loop that reads in the last three doubles for the projection direction
 		for(int i = 0; i < projectionDirection.length; i++) {
 					
 			projectionDirection[i] = readInput.nextDouble();
@@ -59,6 +62,9 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that normalizes the plane normal
+	// Input: planeNormal vector
+	// Output: no return, updates the normal to the plane in main
 	public static void normalizePlane(double[] planeNormal) {
 		
 		double planeNormalLength = Math.sqrt(Math.pow(planeNormal[0], 2) + Math.pow(planeNormal[1], 2) + Math.pow(planeNormal[2], 2));
@@ -71,6 +77,9 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that reads the lines in the file, and skips the first line
+	// Input: inputFile
+	// Output: number of lines in the file minus the first line
 	public static int readLines(File inputFile) throws IOException {
 		
 		Scanner readLines = new Scanner(inputFile);
@@ -90,6 +99,9 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that prints the values to a file
+	// Input: inputFile, name of file
+	// Output: no return, writes to a new file
 	public static void print2File(double[][] points, String nameOfFile) throws IOException {
 		
 		PrintWriter print2File = new PrintWriter(nameOfFile);
@@ -111,6 +123,9 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that carries out parallel projection
+	// Input: inputFile, point on plane, plane normal, projection direction
+	// Output: matrix holding the three projected points per line, as many lines are there were lines in the file - 1
 	public static double[][] parallelProjection(File inputFile, double[] pointOnPlane, double[] planeNormal, double[] projectionDirection) throws IOException {
 		
 		int numRows = readLines(inputFile);
@@ -144,10 +159,13 @@ public class JCameron_PartB {
 			// Calculates the projected point using x' = x + [([q-x] . n)/v . n]v
 			for(int i = 0; i < currentPoint.length; i++) {
 				
+				// Carries out parallel projection on the current point and places it in the projected points matrix
 				projectedPoints[currentRow][i + (3 * numPoint)] = currentPoint[i] + ((dotProduct(vectorQMinusX, planeNormal) / dotProduct(projectionDirection, planeNormal)) * projectionDirection[i]);
 				
 			}
 			
+			// If the point just read was the third point in the line
+			// set the numPoint back to 0 and increment the current row to properly use matrix
 			if(numPoint == 2) {
 				
 				numPoint = 0;
@@ -167,6 +185,9 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that carries out perspective projection, very similar method compared to parallel projection but with a different equation
+	// Input: inputFile, point on plane, plane normal
+	// Output: matrix that holds all the projected points using perspective projection
 	public static double[][] perspectiveProjection(File inputFile, double[] pointOnPlane, double[] planeNormal) throws IOException {
 		
 		int numRows = readLines(inputFile);
@@ -214,10 +235,14 @@ public class JCameron_PartB {
 		
 	}
 	
+	// Method that carries out the dot product between two vectors
+	// Input: two vectors
+	// Output: dot product of the two vectors
 	public static double dotProduct(double[] vector1, double[] vector2) {
 		
 		double dotProduct = 0;
 		
+		// If the lengths of the vectors match, carry out the dot product process
 		if(vector1.length == vector2.length) {
 			
 			for(int i = 0; i < vector1.length; i++) {
