@@ -83,6 +83,7 @@ public class JCameron_PartA {
 		boolean result = true;
 		double columnSum = 0;
 		double rowSum = 0;
+		double tolerance = 0.1;
 		
 		// Check if matrix is a square matrix
 		if(matrixToCheck.length == matrixToCheck[0].length) {
@@ -106,22 +107,14 @@ public class JCameron_PartA {
 					
 				}
 				
-				if(Math.ceil(rowSum)!= 1) {
-					if(Math.ceil(columnSum) != 1) {
-						
-						result = false;
-						
-					}
+				if(Math.abs(1 - rowSum) <= tolerance || Math.abs(1 - columnSum) <= tolerance) {
+					
 					
 					
 				}
-				else if(Math.ceil(columnSum) != 1) {
-					if(Math.ceil(rowSum) != 1) {
-						
-						result = false;
-						
-					}
+				else{
 					
+					result = false;
 					
 				}
 
