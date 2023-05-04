@@ -1,6 +1,6 @@
 /*
  * Author: Cameron Johnson
- * Programming Assignment 5
+ * Programming Assignment 5 - Part B
  * CS 2300 003
  * Last updated: May 2023
  * Updated by: Cameron Johnson
@@ -21,7 +21,9 @@ public class JCameron_PartA {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-
+		
+		// Running with the default input.txt file will give the results
+		// for the book example matrix
 		File inputFile = new File("input.txt");
 		
 		double[][] inputMatrix = valuesToMatrix(inputFile);

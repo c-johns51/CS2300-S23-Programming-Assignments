@@ -1,3 +1,20 @@
+/*
+ *  Author: Cameron Johnson
+ * Programming Assignment 5 - Part B
+ * CS2300 003
+ * Last Updated: May 2023
+ * Updated by: Cameron Johnson
+ * 
+ * Description: This program uses linear binary classification to classify whether or not a user would like a series 
+ * of unwatched movies based on trained weights from a training file. The program takes a random set of
+ * weights and, using features from the training file, takes the dot product between the set of weights
+ * and set of features. It then uses this info with the label of the already watched movie to update the 
+ * weights array for the next sample. After convergence is met, the trained weight array is then dotted 
+ * with features from an unwatched movie, and will return if the user would like or dislike that movie 
+ * based on the features it has.
+ * 
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -208,13 +225,13 @@ public class JCameron_PartB {
 		
 		double[] weightVector = new double[size];
 		
-		int max = 5;
-		int min = -5;
-		int range = max - min + 1;
+		double max = 10;
+		double min = 1;
+		double range = max - min + 1;
 		
 		for(int i = 0; i < weightVector.length; i++) {
 			
-			weightVector[i] = (int)(Math.random() * range) + min;
+			weightVector[i] = (Math.random() * range) + min;
 			
 		}
 		
@@ -300,7 +317,7 @@ public class JCameron_PartB {
 					
 				}
 				
-				for(int j = 0; j < weightVector.length; i++) {
+				for(int j = 0; j < weightVector.length; j++) {
 					
 					difference[j] = prevWeightVector[j] - weightVector[j];
 					
@@ -321,7 +338,7 @@ public class JCameron_PartB {
 	// Output: true/false based on convergence
 	public static boolean convergence(double[] difference) {
 		
-		int tolerance = 1;
+		double tolerance = 0.0001;
 		boolean result = true;
 		
 		for(int i = 0; i < difference.length; i++) {
